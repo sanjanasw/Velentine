@@ -65,7 +65,7 @@
     }
 
     .lock-heart {
-      width: clamp(130px, 32vw, 190px);
+      width: clamp(120px, 30vw, 180px);
       aspect-ratio: 1/1;
       margin: 0 auto;
       position: relative;
@@ -186,9 +186,14 @@
       margin-inline: auto;
     }
 
+    .heart-stage {
+      padding-top: clamp(52px, 8vw, 74px);
+    }
+
     @media (max-width: 640px) {
       .letter-scroll { max-height: 240px; }
       .cta-wrap { min-height: 104px; }
+      .heart-stage { padding-top: 56px; }
     }
   </style>
 </head>
@@ -202,7 +207,7 @@
       <h1 class="text-3xl sm:text-4xl font-semibold text-rose-900">Unlock My Heart</h1>
       <p class="text-rose-800/90 intro-copy">Tap the heart 5 times to reveal what I have been wanting to tell you.</p>
 
-      <div>
+      <div class="heart-stage">
         <button id="lockHeart" class="lock-heart" aria-label="Locked heart game button">
           <span class="heart-core" id="heartCore"></span>
           <span class="lock-icon" id="lockIcon">&#128274;</span>
