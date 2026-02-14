@@ -1,0 +1,358 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unlock My Heart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --blush: #ffe4ec;
+      --rose: #ff8fab;
+      --deep-rose: #d6336c;
+      --wine: #7f1734;
+      --cream: #fffafc;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Georgia", "Times New Roman", serif;
+      background: radial-gradient(circle at 20% 20%, #fff7fa 0%, var(--blush) 35%, #ffc2d1 75%, #ffb3c6 100%);
+      color: #4a1027;
+      overflow-x: hidden;
+    }
+
+    .float-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-heart {
+      position: absolute;
+      bottom: -40px;
+      color: rgba(214, 51, 108, 0.25);
+      animation: floatUp linear infinite;
+      filter: drop-shadow(0 4px 8px rgba(127, 23, 52, 0.2));
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) translateX(0) scale(0.7) rotate(0deg); opacity: 0; }
+      15% { opacity: 0.8; }
+      100% { transform: translateY(-120vh) translateX(40px) scale(1.15) rotate(25deg); opacity: 0; }
+    }
+
+    .main-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .glass-card {
+      background: linear-gradient(160deg, rgba(255,255,255,0.78), rgba(255,240,246,0.72));
+      border: 1px solid rgba(255,255,255,0.65);
+      box-shadow: 0 15px 40px rgba(127, 23, 52, 0.15);
+      backdrop-filter: blur(6px);
+    }
+
+    .intro-copy {
+      max-width: 34ch;
+      margin-inline: auto;
+    }
+
+    .lock-heart {
+      width: clamp(130px, 32vw, 190px);
+      aspect-ratio: 1/1;
+      margin: 0 auto;
+      position: relative;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.25s ease, filter 0.25s ease;
+      filter: drop-shadow(0 14px 18px rgba(127, 23, 52, 0.25));
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .heart-core {
+      position: absolute;
+      inset: 0;
+      transform: rotate(-45deg);
+      border-radius: 18px;
+      background: linear-gradient(145deg, #ff9eb8, #d6336c 55%, #9a1f48 100%);
+      box-shadow: inset 8px 8px 14px rgba(255, 188, 207, 0.45), inset -8px -8px 14px rgba(112, 19, 47, 0.38);
+      transition: background 0.25s ease;
+    }
+
+    .heart-core::before,
+    .heart-core::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: inherit;
+    }
+
+    .heart-core::before { top: -50%; left: 0; }
+    .heart-core::after { left: 50%; top: 0; }
+
+    .lock-icon {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      transform: translate(-50%, -50%) rotate(45deg);
+      font-size: clamp(28px, 7vw, 42px);
+      color: #fff6f9;
+      text-shadow: 0 4px 10px rgba(87, 13, 38, 0.6);
+      pointer-events: none;
+    }
+
+    .lock-heart:active { transform: scale(0.97); }
+
+    .shake {
+      animation: shakeHeart 0.35s ease;
+    }
+
+    @keyframes shakeHeart {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-6px) rotateZ(-2deg); }
+      40% { transform: translateX(6px) rotateZ(2deg); }
+      60% { transform: translateX(-4px) rotateZ(-1deg); }
+      80% { transform: translateX(4px) rotateZ(1deg); }
+      100% { transform: translateX(0); }
+    }
+
+    .love-letter {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: max-height 0.9s ease, opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .love-letter.show {
+      max-height: 1200px;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .letter-scroll {
+      max-height: 300px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #d6336c #ffd7e3;
+    }
+
+    .letter-scroll::-webkit-scrollbar { width: 8px; }
+    .letter-scroll::-webkit-scrollbar-track { background: #ffd7e3; border-radius: 999px; }
+    .letter-scroll::-webkit-scrollbar-thumb { background: #d6336c; border-radius: 999px; }
+
+    .confetti-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 30;
+      overflow: hidden;
+    }
+
+    .confetti-heart {
+      position: absolute;
+      font-size: clamp(12px, 2.5vw, 24px);
+      animation: confettiDrop 1.7s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes confettiDrop {
+      0% { transform: translateY(0) translateX(0) rotate(0deg) scale(0.6); opacity: 1; }
+      100% { transform: translateY(80vh) translateX(var(--drift)) rotate(480deg) scale(1.1); opacity: 0; }
+    }
+
+    .no-btn {
+      position: relative;
+      transition: transform 0.18s ease;
+    }
+
+    .action-btn {
+      min-width: 110px;
+    }
+
+    .cta-wrap {
+      min-height: 92px;
+      max-width: 320px;
+      margin-inline: auto;
+    }
+
+    @media (max-width: 640px) {
+      .letter-scroll { max-height: 240px; }
+      .cta-wrap { min-height: 104px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="float-layer" id="floatLayer" aria-hidden="true"></div>
+  <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+
+  <main class="main-wrap min-h-screen flex items-center justify-center px-4 py-10">
+    <section class="w-full max-w-xl glass-card rounded-3xl p-6 sm:p-10 text-center space-y-6 sm:space-y-7">
+      <p class="text-sm tracking-[0.24em] uppercase text-rose-700/80">A little surprise</p>
+      <h1 class="text-3xl sm:text-4xl font-semibold text-rose-900">Unlock My Heart</h1>
+      <p class="text-rose-800/90 intro-copy">Tap the heart 5 times to reveal what I have been wanting to tell you.</p>
+
+      <div>
+        <button id="lockHeart" class="lock-heart" aria-label="Locked heart game button">
+          <span class="heart-core" id="heartCore"></span>
+          <span class="lock-icon" id="lockIcon">&#128274;</span>
+        </button>
+      </div>
+
+      <p id="progressText" class="font-medium text-rose-900">Clicks: 0 / 5</p>
+
+      <div id="loveLetter" class="love-letter">
+        <div class="rounded-2xl bg-white/80 border border-white/90 shadow-lg p-5 sm:p-6 text-left">
+          <h2 class="text-2xl text-rose-900 text-center">My Love Letter</h2>
+          <div class="letter-scroll mt-4 pr-2 leading-7 text-rose-950/90">
+            <p>My Dearest Motta Wifeyy,</p>
+            <p class="mt-3">If love had a shape, it would be every little moment we share: the laughter that sneaks up on us, the quiet comfort, and the way my world softens when I think of you.</p>
+            <p class="mt-3">You are the calm in my chaos and the spark in my ordinary days. Thank you for being kind, patient, and wonderfully you.</p>
+            <p class="mt-3">Every heartbeat of mine has learned your name, and every dream I keep has your smile in it. No matter where life takes us, my favorite place will always be right by your side.</p>
+            <p class="mt-3">Today, I just want you to know this: you are deeply loved, endlessly admired, and forever cherished.</p>
+            <p class="mt-4 font-semibold">With all my heart,<br>Your Valentine</p>
+          </div>
+        </div>
+
+        <div class="mt-6 rounded-2xl bg-rose-50/80 border border-rose-100 p-5 sm:p-6 text-center">
+          <h3 class="text-2xl font-semibold text-rose-900">Will you be my Valentine?</h3>
+          <div class="mt-5 flex items-center justify-center gap-3 sm:gap-5 relative cta-wrap" id="ctaWrap">
+            <button class="action-btn px-6 py-3 rounded-full bg-rose-700 text-white font-semibold shadow-md hover:bg-rose-800 transition" id="yesBtn">Yes</button>
+            <button class="action-btn no-btn px-6 py-3 rounded-full bg-white text-rose-800 border border-rose-300 font-semibold shadow-sm" id="noBtn">No</button>
+          </div>
+          <p id="answerText" class="mt-4 h-7 text-rose-800 font-medium"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const floatLayer = document.getElementById('floatLayer');
+    const confettiLayer = document.getElementById('confettiLayer');
+    const lockHeart = document.getElementById('lockHeart');
+    const heartCore = document.getElementById('heartCore');
+    const lockIcon = document.getElementById('lockIcon');
+    const progressText = document.getElementById('progressText');
+    const loveLetter = document.getElementById('loveLetter');
+    const ctaWrap = document.getElementById('ctaWrap');
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const answerText = document.getElementById('answerText');
+
+    const clickGoal = 5;
+    let clicks = 0;
+    let unlocked = false;
+
+    const heartStages = [
+      'linear-gradient(145deg, #ff9eb8, #d6336c 55%, #9a1f48 100%)',
+      'linear-gradient(145deg, #ff97b3, #cf2961 55%, #8f1d43 100%)',
+      'linear-gradient(145deg, #ff8aa9, #c71f57 55%, #831a3d 100%)',
+      'linear-gradient(145deg, #ff7c9f, #bb1b4f 55%, #751636 100%)',
+      'linear-gradient(145deg, #ff6f96, #ad1647 55%, #66122f 100%)'
+    ];
+
+    function spawnFloatingHearts() {
+      const count = window.innerWidth < 640 ? 18 : 26;
+      for (let i = 0; i < count; i += 1) {
+        const heart = document.createElement('span');
+        heart.className = 'floating-heart';
+        heart.textContent = '♥';
+        const left = Math.random() * 100;
+        const size = 12 + Math.random() * 24;
+        const duration = 8 + Math.random() * 9;
+        const delay = Math.random() * 8;
+        heart.style.left = left + 'vw';
+        heart.style.fontSize = size + 'px';
+        heart.style.animationDuration = duration + 's';
+        heart.style.animationDelay = delay + 's';
+        floatLayer.appendChild(heart);
+      }
+    }
+
+    function heartConfettiBurst() {
+      const burstCount = window.innerWidth < 640 ? 40 : 64;
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight * 0.33;
+
+      for (let i = 0; i < burstCount; i += 1) {
+        const piece = document.createElement('span');
+        piece.className = 'confetti-heart';
+        piece.textContent = ['♥', '❤', '💗', '💖'][Math.floor(Math.random() * 4)];
+        piece.style.left = centerX + (Math.random() * 100 - 50) + 'px';
+        piece.style.top = centerY + (Math.random() * 40 - 20) + 'px';
+        piece.style.setProperty('--drift', (Math.random() * 300 - 150) + 'px');
+        piece.style.color = ['#d6336c', '#ff4d6d', '#ff758f', '#c9184a'][Math.floor(Math.random() * 4)];
+        piece.style.animationDelay = (Math.random() * 0.2) + 's';
+        confettiLayer.appendChild(piece);
+
+        setTimeout(() => piece.remove(), 1900);
+      }
+    }
+
+    function unlockSequence() {
+      unlocked = true;
+      lockIcon.textContent = '🔓';
+      progressText.textContent = 'Unlocked! Scroll down...';
+      heartConfettiBurst();
+      setTimeout(() => {
+        loveLetter.classList.add('show');
+        loveLetter.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 250);
+    }
+
+    lockHeart.addEventListener('click', () => {
+      if (unlocked) return;
+
+      clicks += 1;
+      lockHeart.classList.remove('shake');
+      void lockHeart.offsetWidth;
+      lockHeart.classList.add('shake');
+
+      const stageIndex = Math.min(clicks - 1, heartStages.length - 1);
+      heartCore.style.background = heartStages[stageIndex];
+      progressText.textContent = `Clicks: ${clicks} / ${clickGoal}`;
+
+      if (clicks >= clickGoal) {
+        unlockSequence();
+      }
+    });
+
+    function moveNoButton() {
+      const maxX = Math.max(18, ((ctaWrap.clientWidth - noBtn.offsetWidth) / 2) - 8);
+      const maxY = Math.max(10, ((ctaWrap.clientHeight - noBtn.offsetHeight) / 2) - 6);
+      const x = (Math.random() * maxX * 2) - maxX;
+      const y = (Math.random() * maxY * 2) - maxY;
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    noBtn.addEventListener('mouseenter', moveNoButton);
+    noBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      moveNoButton();
+    }, { passive: false });
+
+    yesBtn.addEventListener('click', () => {
+      answerText.textContent = 'You just made my heart the happiest one alive.';
+      heartConfettiBurst();
+    });
+
+    noBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      answerText.textContent = 'Nice try... my heart still says yes.';
+      moveNoButton();
+    });
+
+    spawnFloatingHearts();
+  </script>
+</body>
+</html>
